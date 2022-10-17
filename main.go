@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func main() {
 
@@ -49,8 +52,17 @@ func main() {
 
 		fmt.Printf("Thank you %v %v for booking %v tickets, you will receive your confirmation for the tickets at %v\n ", userFirstname, userLastname, userTickets, email)
 		fmt.Printf("The remaining tickets are now %v\n", remainingTickets)
-		fmt.Printf("This is how many %v we have\n", bookings)
-
+		//iterating through the first names only from bookings"
+		firstNames := []string{}
+		// for index, booking := range bookings {
+		//using _ for the index , because the first we dnt want to get error for the unused variables
+		for _, booking := range bookings {
+			//strings split strings with whitespace separator and slice it into 2 elements
+			var names = strings.Fields(booking)
+			firstNames = append(firstNames, names[0])
+		}
+		fmt.Printf("The first names of bookings are %v\n", firstNames)
+		//check if all tickets are booked and no tickets are left
 	}
 
 }
