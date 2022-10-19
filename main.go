@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"go-booking-app/helper"
 	"strings"
-	
 )
 
 // package level variables
 const conferenceTickets = 50
+
 var conferenceName string = "Go Conference"
 var remainingTickets uint = 50
 var bookings = []string{} //using slice for storing tickets instead of array
@@ -21,15 +22,15 @@ func main() {
 	for {
 		// callling getUserInput function:
 		userFirstname, userLastname, email, userTickets := getUserInput()
-		
+
 		//calling validateUserInput func:
-		isValidName, isValidEmail, isValidTicketNumber := validateUserInput(userFirstname, userLastname, email, userTickets)
+		isValidName, isValidEmail, isValidTicketNumber :=helper.ValidateUserInput(userFirstname, userLastname, email, userTickets,remainingTickets )
 
 		//check if the user is booking more tickets than we have in total
 		if isValidName && isValidEmail && isValidTicketNumber {
 
 			//calling bookingTickets function:
-			bookingTickets( userTickets,  userFirstname, userLastname, email)
+			bookingTickets(userTickets, userFirstname, userLastname, email)
 
 			//call the function printFirstNames:
 			firstNames := getFirstNames()
@@ -115,9 +116,7 @@ func getUserInput() (string, string, string, uint) {
 
 }
 
-
-
-func bookingTickets( userTickets uint,  userFirstname string, userLastname string, email string) {
+func bookingTickets(userTickets uint, userFirstname string, userLastname string, email string) {
 	//logic for updating the number of tickets remaining:
 	remainingTickets = remainingTickets - userTickets
 
