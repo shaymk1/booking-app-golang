@@ -5,59 +5,33 @@ import (
 	"strings"
 )
 
+// package level variables
+const conferenceTickets = 50
+var conferenceName string = "Go Conference"
+var remainingTickets uint = 50
+var bookings = []string{} //using slice for storing tickets instead of array
+
 func main() {
 
-	// variables
-	conferenceName := "Go Conference" //syntantic sugar
-	const conferenceTickets = 50
-	var remainingTickets uint = 50
-	//using slice for storing tickets instead of array
-	bookings := []string{}
-
 	//calling the  greetUsers function:
-	greetUsers(conferenceName, conferenceTickets, remainingTickets)
+	greetUsers()
 
 	// infinite loop simulating different users booking
 	for {
-		// ticket-booking
-		//ask the user to input the username
-		var userFirstname string
-		var userLastname string
-		var email string
-		var userTickets uint
-
-		fmt.Println("Enter your first name:  ")
-		//a function to point at the data stored in memory->pointer
-		fmt.Scan(&userFirstname)
-
-		fmt.Println("Enter your first last name:  ")
-		//a function to point at the data stored in memory->pointer
-		fmt.Scan(&userLastname)
-
-		fmt.Println("Enter your email:  ")
-		//a function to point at the data stored in memory->pointer
-		fmt.Scan(&email)
-
-		fmt.Println("How many tickets you want:  ")
-		//a function to point at the data stored in memory->pointer
-		fmt.Scan(&userTickets)
-
+		// callling getUserInput function:
+		userFirstname, userLastname, email, userTickets := getUserInput()
+		
 		//calling validateUserInput func:
-	    isValidName, isValidEmail, isValidTicketNumber:=validateUserInput(userFirstname,userLastname,email,userTickets,remainingTickets )
+		isValidName, isValidEmail, isValidTicketNumber := validateUserInput(userFirstname, userLastname, email, userTickets)
 
 		//check if the user is booking more tickets than we have in total
-		if isValidName && isValidName && isValidTicketNumber {
-			//logic for updating the number of tickets remaining:
-			remainingTickets = remainingTickets - userTickets
+		if isValidName && isValidEmail && isValidTicketNumber {
 
-			//logic for updating the user's first and last name:
-			bookings = append(bookings, userFirstname+" "+userLastname)
-
-			fmt.Printf("Thank you %v %v for booking %v tickets, you will receive your confirmation for the tickets at %v\n ", userFirstname, userLastname, userTickets, email)
-			fmt.Printf("The remaining tickets are now %v\n", remainingTickets)
+			//calling bookingTickets function:
+			bookingTickets( userTickets,  userFirstname, userLastname, email)
 
 			//call the function printFirstNames:
-			firstNames := getFirstNames(bookings)
+			firstNames := getFirstNames()
 			fmt.Printf("The first names are now %v\n", firstNames)
 
 			//check if all tickets are booked and no tickets are left:
@@ -92,15 +66,15 @@ func main() {
 
 }
 
-func greetUsers(confName string, confTickets int, remainingTickets uint) {
+func greetUsers() {
 	//greetings/welcome messages
-	fmt.Printf("welcome to our %v booking application\n", confName)
-	fmt.Printf("we have  %v tickets in total and we now have %v tickets available\n", confTickets, remainingTickets)
+	fmt.Printf("welcome to our %v booking application\n", conferenceName)
+	fmt.Printf("we have  %v tickets in total and we now have %v tickets available\n", conferenceTickets, remainingTickets)
 	fmt.Println("Get your tickets here to now!")
 }
 
-//[] indicates that we are returning a slice of strings
-func getFirstNames(bookings []string) []string {
+// [] indicates that we are returning a slice of strings
+func getFirstNames() []string {
 	//iterating through the first names only from bookings"
 	firstNames := []string{}
 
@@ -113,12 +87,50 @@ func getFirstNames(bookings []string) []string {
 	return firstNames
 
 }
+func getUserInput() (string, string, string, uint) {
+	//ask the user to input the username
+	var userFirstname string
+	var userLastname string
+	var email string
+	var userTickets uint
 
-func validateUserInput(userFirstname string , userLastname string , email string,userTickets uint, remainingTickets uint ) (bool,bool,bool){
+	fmt.Println("Enter your first name:  ")
+	//a function to point at the data stored in memory->pointer
+	fmt.Scan(&userFirstname)
+
+	fmt.Println("Enter your first last name:  ")
+	//a function to point at the data stored in memory->pointer
+	fmt.Scan(&userLastname)
+
+	fmt.Println("Enter your email:  ")
+	//a function to point at the data stored in memory->pointer
+	fmt.Scan(&email)
+
+	fmt.Println("How many tickets you want:  ")
+	//a function to point at the data stored in memory->pointer
+	fmt.Scan(&userTickets)
+
+	return userFirstname, userLastname, email, userTickets
+
+}
+
+func validateUserInput(userFirstname string, userLastname string, email string, userTickets uint) (bool, bool, bool) {
 	//validating user input:
-		isValidName := len(userFirstname) > 2 && len(userLastname) > 2
-		isValidEmail := strings.Contains(email, "@")
-		isValidTicketNumber := userTickets > 0 && userTickets <= remainingTickets
-		return isValidName, isValidEmail, isValidTicketNumber
-	
+	isValidName := len(userFirstname) > 2 && len(userLastname) > 2
+	isValidEmail := strings.Contains(email, "@")
+	isValidTicketNumber := userTickets > 0 && userTickets <= remainingTickets
+	return isValidName, isValidEmail, isValidTicketNumber
+
+}
+
+func bookingTickets( userTickets uint,  userFirstname string, userLastname string, email string) {
+	//logic for updating the number of tickets remaining:
+	remainingTickets = remainingTickets - userTickets
+
+	//logic for updating the user's first and last name:
+	bookings = append(bookings, userFirstname+" "+userLastname)
+
+	fmt.Printf("Thank you %v %v for booking %v tickets, you will receive your confirmation for the tickets at %v\n ", userFirstname, userLastname, userTickets, email)
+	fmt.Printf("The remaining tickets are now %v\n", remainingTickets)
+
 }
