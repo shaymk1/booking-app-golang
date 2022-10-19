@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"go-booking-app/helper"
 	"strings"
 )
 
@@ -24,7 +23,7 @@ func main() {
 		userFirstname, userLastname, email, userTickets := getUserInput()
 
 		//calling validateUserInput func:
-		isValidName, isValidEmail, isValidTicketNumber :=helper.ValidateUserInput(userFirstname, userLastname, email, userTickets,remainingTickets )
+		isValidName, isValidEmail, isValidTicketNumber := ValidateUserInput(userFirstname, userLastname, email, userTickets, remainingTickets)
 
 		//check if the user is booking more tickets than we have in total
 		if isValidName && isValidEmail && isValidTicketNumber {
