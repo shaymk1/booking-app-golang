@@ -43,10 +43,7 @@ func main() {
 				break
 			}
 
-			// } else {
-			// 	//end program
-			// 	fmt.Printf("Sorry, we only have %v tickets available, so you can't book %v tickets\n ", remainingTickets, userTickets)
-			// 	break}
+			
 
 		} else {
 			if !isValidName {
