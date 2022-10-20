@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	// "booking-app-golang/helper"
 )
 
 // package level variables
@@ -23,7 +24,7 @@ func main() {
 		userFirstname, userLastname, email, userTickets := getUserInput()
 
 		//calling validateUserInput func:
-		isValidName, isValidEmail, isValidTicketNumber := ValidateUserInput(userFirstname, userLastname, email, userTickets, remainingTickets)
+		isValidName, isValidEmail, isValidTicketNumber :=ValidateUserInput(userFirstname, userLastname, email, userTickets, remainingTickets)
 
 		//check if the user is booking more tickets than we have in total
 		if isValidName && isValidEmail && isValidTicketNumber {
