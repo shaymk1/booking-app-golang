@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"strings"
-	// "booking-app-golang/helper"
+	"sync"
+	"time"
 )
 
 // package level variables
@@ -11,7 +11,18 @@ const conferenceTickets = 50
 
 var conferenceName string = "Go Conference"
 var remainingTickets uint = 50
-var bookings = []string{} //using slice for storing tickets instead of array
+var bookings = make([]UserData, 0)
+
+//var bookings = []string{} //using slice for storing tickets instead of array
+
+type UserData struct {
+	firstName       string
+	lastName        string
+	email           string
+	numberOfTickets uint
+}
+
+var wg = sync.WaitGroup{}
 
 func main() {
 
@@ -24,13 +35,16 @@ func main() {
 		userFirstname, userLastname, email, userTickets := getUserInput()
 
 		//calling validateUserInput func:
-		isValidName, isValidEmail, isValidTicketNumber :=ValidateUserInput(userFirstname, userLastname, email, userTickets, remainingTickets)
+		isValidName, isValidEmail, isValidTicketNumber := ValidateUserInput(userFirstname, userLastname, email, userTickets, remainingTickets)
 
 		//check if the user is booking more tickets than we have in total
 		if isValidName && isValidEmail && isValidTicketNumber {
 
 			//calling bookingTickets function:
 			bookingTickets(userTickets, userFirstname, userLastname, email)
+			//calling sendTicket function:
+			wg.Add(1)
+			go sendTicket(userTickets, userFirstname, userLastname, email)
 
 			//call the function printFirstNames:
 			firstNames := getFirstNames()
@@ -42,8 +56,6 @@ func main() {
 				fmt.Println("Sorry , all our tickets are booked out")
 				break
 			}
-
-			
 
 		} else {
 			if !isValidName {
@@ -63,6 +75,8 @@ func main() {
 
 	}
 
+	wg.Wait()
+
 }
 
 func greetUsers() {
@@ -80,8 +94,8 @@ func getFirstNames() []string {
 	//using _ for the index , because the first we dnt want to get error for the unused variables
 	for _, booking := range bookings {
 		//strings split strings with whitespace separator and slice it into 2 elements
-		var names = strings.Fields(booking)
-		firstNames = append(firstNames, names[0])
+		//var names = strings.Fields(booking)
+		firstNames = append(firstNames, booking.firstName)
 	}
 	return firstNames
 
@@ -117,10 +131,27 @@ func bookingTickets(userTickets uint, userFirstname string, userLastname string,
 	//logic for updating the number of tickets remaining:
 	remainingTickets = remainingTickets - userTickets
 
-	//logic for updating the user's first and last name:
-	bookings = append(bookings, userFirstname+" "+userLastname)
+	//create an empty map for users
+	var userData = UserData{
+		firstName:       userFirstname,
+		lastName:        userLastname,
+		email:           email,
+		numberOfTickets: userTickets,
+	}
+
+	bookings = append(bookings, userData)
+	fmt.Printf("List of bookings is %v\n", bookings)
 
 	fmt.Printf("Thank you %v %v for booking %v tickets, you will receive your confirmation for the tickets at %v\n ", userFirstname, userLastname, userTickets, email)
 	fmt.Printf("The remaining tickets are now %v\n", remainingTickets)
 
+}
+
+func sendTicket(userTickets uint, firstName string, lastName string, email string) {
+	time.Sleep(50 * time.Second)
+	var ticket = fmt.Sprintf("%v tickets for %v %v", userTickets, firstName, lastName)
+	fmt.Println("#################")
+	fmt.Printf("Sending ticket:\n %v \nto email address %v\n", ticket, email)
+	fmt.Println("#################")
+	wg.Done()
 }
